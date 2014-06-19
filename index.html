@@ -1,0 +1,56 @@
+---
+layout: default
+title: Home
+description: Beautiful word clouds with jQuery
+isHome: true
+---
+
+<!-- intro -->
+<section class="bs-docs-section">
+  <h1 id="overview" class="page-header">Overview</h1>
+  
+  <blockquote>
+    jQCloud is a jQuery plugin that builds neat and pure HTML + CSS word clouds and tag clouds that are actually shaped like a cloud (otherwise, why would we call them 'word clouds'?).
+    <br>
+    <em>Forked from <a href="https://github.com/lucaong/jQCloud">Luca Ongaro</a></em>
+  </blockquote>
+
+  <div class="bs-example">
+    <div id="demo"></div>
+  </div>
+</section>
+
+
+<section class="bs-docs-section">
+  <h1 id="installation" class="page-header">Installation</h1>
+
+  <h3 id="install-jekyll">Install Jekyll</h3>
+  
+</section>
+
+
+<style>
+#demo {
+  margin:0 auto;
+  border:1px solid #eee;
+  border-radius:8px;
+  width:80%;
+  max-width:600px;
+  height:250px;
+  background:white;
+}
+</style>
+
+<link rel="stylesheet" href="{{site.github.url}}/dist/jqcloud/dist/jqcloud.min.css">
+<script src="{{site.github.url}}/dist/jqcloud/dist/jqcloud.min.js"></script>
+<script src="{{site.github.url}}/dist/demo-words.js"></script>
+
+<script>
+$('#demo').jQCloud(basic_words, {
+  autoResize: true,
+  fontSize: {
+    max: 0.1,
+    min: 0.02
+  }
+});
+</script>

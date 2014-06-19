@@ -1,0 +1,7 @@
+/_site
+Gemfile.lock
+
+# commit minimum dependencies
+/dist/jquery
+/dist/jqcloud/*
+!/dist/jqcloud/dist
