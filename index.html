@@ -5,14 +5,15 @@ description: Beautiful word clouds with jQuery
 isHome: true
 ---
 
-<!-- intro -->
 <section class="bs-docs-section">
   <h1 id="overview" class="page-header">Overview</h1>
-  
-  <blockquote>
-    jQCloud is a jQuery plugin that builds neat and pure HTML + CSS word clouds and tag clouds that are actually shaped like a cloud (otherwise, why would we call them 'word clouds'?).
-    <br>
-    <em>Forked from <a href="https://github.com/lucaong/jQCloud">Luca Ongaro</a></em>
+
+  <blockquote>  
+    <p>jQCloud is a jQuery plugin that builds neat and pure HTML + CSS word clouds and tag clouds that are actually shaped like a cloud (otherwise, why would we call them 'word clouds'?).</p>
+
+    <p>The cloud is pure HTML and CSS so is very easily customizable</p>
+
+    <small>Forked from <a href="https://github.com/lucaong/jQCloud">Luca Ongaro</a></small>
   </blockquote>
 
   <div class="bs-example">
@@ -24,8 +25,235 @@ isHome: true
 <section class="bs-docs-section">
   <h1 id="installation" class="page-header">Installation</h1>
 
-  <h3 id="install-jekyll">Install Jekyll</h3>
+  <h3 id="bower">Bower</h3>
+
+  <p>The plugin is available on Bower. Add <code>jqcloud2</code> to your <code>bower.json</code> file or install it manually with <code>bower install jqcloud2</code>.</p>
+
+  <h3 id="includes">Includes</h3>
+
+  <p>Include the Javascript file in your page after jQuery and optionally the CSS file (see <a href="#colors-and-sizes">Colors &amp; sizes</a> section).</p>
+
+{% highlight html %}
+<script src="bower_components/jqcloud2/dist/jqcloud.min.js"></script>
+
+<link rel="stylesheet" href="bower_components/jqcloud2/dist/jqcloud.min.css">
+{% endhighlight %}
   
+</section>
+
+<section class="bs-docs-section">
+  <h1 id="usage" class="page-header">Usage</h1>
+
+  <p>Apply the plugin to a container (preferably a <code>&lt;div&gt;</code>) and provide at least a list of words (see <a href="#words-options">Words options</a> section).</p>
+
+{% highlight javascript %}
+$('#keywords').jQCloud(words);
+{% endhighlight %}
+
+  <div class="bs-callout bs-callout-danger">
+    <h4>Container dimensions &amp; position</h4>
+    <p>The cloud container must have defined dimensions, either via CSS or via th <code>width</code> and <code>height</code> options.</p>
+    <p>Additionally the container must have a defined position (other than <code>static</code>), if you don't define one your self, the plugin will overwrite the position to <code>relative</code>.</p>
+  </div>
+
+  <h3 id="words-options">Words options</h3>
+
+  <p>Each item in the words array must be an object with the following attributes.</p>
+
+  <div class="table-responsive">
+    <table class="table table-bordered table-striped">
+      <thead>
+       <tr>
+         <th style="width: 100px;">Name</th>
+         <th style="width: 50px;">type</th>
+         <th style="width: 50px;">default</th>
+         <th>description</th>
+       </tr>
+      </thead>
+      <tbody>
+       <tr>
+         <td>text</td>
+         <td>string</td>
+         <td><span class="label label-danger">required</span></td>
+         <td>Text of the word</td>
+       </tr>
+       <tr>
+         <td>weight</td>
+         <td>number</td>
+         <td><span class="label label-danger">required</span></td>
+         <td>Defines the relative importance of the word. The range is arbitrary and will be linearly mapped to a discrete scale from 1 to <code>steps</code></td>
+       </tr>
+       <tr>
+         <td>html</td>
+         <td>object</td>
+         <td>{}</td>
+         <td>An object of custom attributes which will be added to the word, such as <code>class</code>, <code>title</code> or <code>data-myvar</code>.
+            <i class="glyphicon glyphicon-warning-sign"></i> the <code>id</code> will be overrided by jQCloud with an internal value.</td>
+       </tr>
+       <tr>
+         <td>handlers</td>
+         <td>object</td>
+         <td>{}</td>
+         <td>List of event handlers which will be attached to the <code>&lt;span&gt;</code> containing the word with jQuery <code>.on()</code> method.</td>
+       </tr>
+       <tr>
+         <td>afterWordRender</td>
+         <td>function</td>
+         <td>null</td>
+         <td>Function called after the word is rendered. <code>this</code> refers to the jQuery object for the <code>&lt;span&gt;</code> containing the word</td>
+       </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3 id="cloud-options">Cloud options</h3>
+
+  <p>You can provide an object of options has second parameter.</p>
+
+{% highlight javascript %}
+$('#keywords').jQCloud(words, {
+  width: 500,
+  height: 350
+});
+{% endhighlight %}
+
+  <div class="table-responsive">
+    <table class="table table-bordered table-striped">
+      <thead>
+       <tr>
+         <th style="width: 100px;">Name</th>
+         <th style="width: 50px;">type</th>
+         <th style="width: 50px;">default</th>
+         <th>description</th>
+       </tr>
+      </thead>
+      <tbody>
+       <tr>
+         <td>width</td>
+         <td>integer</td>
+         <td></td>
+         <td>Fixed width of the container, will default to container current width</td>
+       </tr>
+       <tr>
+         <td>height</td>
+         <td>integer</td>
+         <td></td>
+         <td>Fixed height of the container, will default to container current height</td>
+       </tr>
+       <tr>
+         <td>center</td>
+         <td>object</td>
+         <td>{x: 0.5, y:0.5}</td>
+         <td>Position of the center of the cloud relatively to the container</td>
+       </tr>
+       <tr>
+         <td>autoResize</td>
+         <td>boolean</td>
+         <td>false</td>
+         <td>If the container has dynamic dimensions, set this option to <code>true</code> to update the cloud when the window is resized.</td>
+       </tr>
+       <tr>
+         <td>steps</td>
+         <td>integer</td>
+         <td>10</td>
+         <td>Number of "steps" to map the words on, depending on their weight (see <a href="#colors-and-sizes">Colors &amp; sizes</a> section)</td>
+       </tr>
+       <tr>
+         <td>classPattern</td>
+         <td>string</td>
+         <td>'w{n}'</td>
+         <td>Pattern used to generate the CSS class added to each word. <code>{n}</code> is replaced by the weight of the word (from 1 to <code>steps</code>)</td>
+       </tr>
+       <tr>
+         <td>afterCloudRender</td>
+         <td>function</td>
+         <td>null</td>
+         <td>Function called after the whole cloud is fully rendered. <code>this</code> is the container jQuery object</td>
+       </tr>
+       <tr>
+         <td>delay</td>
+         <td>integer</td>
+         <td>0 or 10</td>
+         <td>Number of milliseconds to wait between each word draw. Defaults to <code>10</code> if there are 50 words or more to avoid browser freezing during rendering. Can also be used for neat display animation!</td>
+       </tr>
+       <tr>
+         <td>shape</td>
+         <td>string</td>
+         <td>'elliptic'</td>
+         <td>Cloud shape, <code>elliptic'</code> or <code>'rectangular'</code></td>
+       </tr>
+       <tr>
+         <td>removeOverflowing</td>
+         <td>boolean</td>
+         <td>true</td>
+         <td>Don't render words which would overflow the container</td>
+       </tr>
+       <tr>
+         <td>encodeURI</td>
+         <td>boolean</td>
+         <td>true</td>
+         <td>Encode special characters in words link</td>
+       </tr>
+       <tr>
+         <td>colors</td>
+         <td>array | function</td>
+         <td>[]</td>
+         <td>Colors used instead of CSS declaration (see <a href="#colors-and-sizes">Colors &amp; sizes</a> section), can be:
+            <ul>
+              <li>An array of colors from most to less important</li>
+              <li>A function taking a step number as only parameter and returning a valid CSS color</li>
+            </ul>
+         </td>
+       </tr>
+       <tr>
+         <td>fontSize</td>
+         <td>array | object | function</td>
+         <td>[]</td>
+         <td>Text sizes used instead of CSS declaration (see <a href="#colors-and-sizes">Colors &amp; sizes</a> section), can be:
+            <ul>
+              <li>An array of sizes (px, em or %) from most to less important</li>
+              <li>An object with <code>max</code> and <code>min</code> values, expressed in fraction of container width (eg: <code>0.1</code>, <code>0.04</code>)</li>
+              <li>A function taking the container width, the container height and a step number as parameters and returning a valid CSS font size</li>
+            </ul>
+         </td>
+       </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3 id="colors-and-sizes">Colors &amp; sizes</h3>
+
+  <p>There are two ways to customize the cloud look and feel: pure CSS or JS configuration.</p>
+
+  <h4>CSS customization</h4>
+  <p>The plugin will add to each word of the cloud a CSS class based on <code>classPattern</code>. There will be <code>steps</code> classes. With the default configuration these classes are <code>w10, w9, w8, w7, w6, w5, w4, w3, w2, w1</code>.</p>
+
+  <p>The included CSS file <code>jqcloud.css</code> is intended as an example and a base on which you can develop your own style.</p>
+
+  <h4>JS customization</h4>
+  <p>Alternatively you can totally get rid of the CSS configuration and use the <code>colors</code> and <code>fontSize</code> parameters to directly inform the plugin which style to apply to the words.</p>
+
+  <div class="bs-callout bs-callout-info">
+    <h4>Nice colors!</h4>
+    <p><strong>Hint:</strong> use <a href="https://github.com/mistic100/tinygradient">TinyGradient</a> library to generate nice gradients.</p>
+  </div>
+
+  <h3 id="methods">Methods</h3>
+
+  <h4>update</h4>
+  <p>Use the update method to dynamically change the list of words in the cloud.</p>
+
+{% highlight javascript %}
+$('#keywords').jQCloud('update', new_words);
+{% endhighlight %}
+
+  <h4>destroy</h4>
+  <p>Completely destroy the cloud and it's data.</p>
+
+{% highlight javascript %}
+$('#keywords').jQCloud('destroy');
+{% endhighlight %}
+
 </section>
 
 
@@ -41,8 +269,8 @@ isHome: true
 }
 </style>
 
-<link rel="stylesheet" href="{{site.github.url}}/dist/jqcloud/dist/jqcloud.min.css">
-<script src="{{site.github.url}}/dist/jqcloud/dist/jqcloud.min.js"></script>
+<link rel="stylesheet" href="{{site.github.url}}/dist/jqcloud2/dist/jqcloud.min.css">
+<script src="{{site.github.url}}/dist/jqcloud2/dist/jqcloud.min.js"></script>
 <script src="{{site.github.url}}/dist/demo-words.js"></script>
 
 <script>
