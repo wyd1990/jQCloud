@@ -42,3 +42,19 @@ var basic_words = [
 	{text: "et nulla", weight: 1},
 	{text: "Sed", weight: 1}
 ];
+
+var linked_words = $.extend(true, [], basic_words);
+linked_words.splice(0, 3, 
+	{text: "Lorem", weight: 13, link: 'http://github.com/mistic100/jQCloud'},
+	{text: "Ipsum", weight: 10.5, link: 'http://www.strangeplanet.fr'},
+	{text: "Dolor", weight: 9.4, link: 'http://piwigo.org'}
+);
+
+var handlers_words = $.extend(true, [], basic_words);
+handlers_words.splice(0, 1, 
+	{text: "Lorem", weight: 13, handlers: {
+		click: function() {
+			alert('You clicked the word !');
+		}
+	}}
+);

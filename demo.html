@@ -1,0 +1,192 @@
+---
+layout: default
+title: Examples
+---
+
+<section class="bs-docs-section">
+  <h1 id="overview" class="page-header">Basic</h1>
+
+  <h3 id="simple">No conf</h3>
+  <p>Default configuration, no special parameters for words.</p>
+  
+  <div class="bs-example">
+    <div id="demo-simple" class="demo"></div>
+  </div>
+{% highlight javascript %}
+var words = [
+  {text: "Lorem", weight: 13},
+  {text: "Ipsum", weight: 10.5},
+  {text: "Dolor", weight: 9.4},
+  {text: "Sit", weight: 8},
+  {text: "Amet", weight: 6.2},
+  {text: "Consectetur", weight: 5},
+  {text: "Adipiscing", weight: 5},
+  /* ... */
+];
+
+$('#demo').jQCloud(words);
+{% endhighlight %}
+
+  <h3 id="link">Links</h3>
+  <p>The three biggest words have links.</p>
+  
+  <div class="bs-example">
+    <div id="demo-link" class="demo"></div>
+  </div>
+{% highlight javascript %}
+var words = [
+  {text: "Lorem", weight: 13, link: 'http://github.com/mistic100/jQCloud'},
+  {text: "Ipsum", weight: 10.5, link: 'http://www.strangeplanet.fr'},
+  {text: "Dolor", weight: 9.4, link: 'http://piwigo.org'},
+  /* ... */
+];
+
+$('#demo').jQCloud(words);
+{% endhighlight %}
+
+  <h3 id="shape">Shape</h3>
+  <p>This cloud is rectangular!</p>
+  
+  <div class="bs-example">
+    <div id="demo-shape" class="demo"></div>
+  </div>
+{% highlight javascript %}
+$('#demo').jQCloud(words, {
+  shape: 'rectangular'
+});
+{% endhighlight %}
+
+  <h3 id="autosize">Automatic size</h3>
+  <p>The container is given a width of 80% and is automatically updated when resized.</p>
+  
+  <div class="bs-example">
+    <div id="demo-autosize" class="demo"></div>
+  </div>
+{% highlight html %}
+<style>
+#demo {
+  width:80%;
+}
+</style>
+
+<script>
+$('#demo').jQCloud(words, {
+  autoResize: true
+});
+</script>
+{% endhighlight %}
+
+</section>
+
+
+<section class="bs-docs-section">
+  <h1 id="advanced" class="page-header">Advanced</h1>
+
+  <h3 id="colors-size">Custom colors &amp; size via JS</h3>
+  <p>A custom array of colors is given to the plugin in addition to min and max font size.</p>
+  
+  <div class="bs-example">
+    <div id="demo-colors-size" class="demo"></div>
+  </div>
+{% highlight javascript %}
+$('#demo').jQCloud(words, {
+  classPattern: null,
+  colors: ["#800026", "#bd0026", "#e31a1c", "#fc4e2a", "#fd8d3c", "#feb24c", "#fed976", "#ffeda0", "#ffffcc"],
+  fontSize: {
+    from: 0.1,
+    to: 0.02
+  }
+});
+{% endhighlight %}
+
+  <h3 id="handlers">Event handlers</h3>
+  <p>A click event is attached to the first word.</p>
+  
+  <div class="bs-example">
+    <div id="demo-handlers" class="demo"></div>
+  </div>
+{% highlight javascript %}
+var words = [
+  {text: "Lorem", weight: 13, handlers: {
+    click: function() {
+      alert('You clicked the word !');
+    }
+  }},
+  {text: "Ipsum", weight: 10.5},
+  {text: "Dolor", weight: 9.4},
+  /* ... */
+];
+
+$('#demo').jQCloud(words);
+{% endhighlight %}
+
+  <h3 id="update">Update</h3>
+  <p>Click the "Update" button to remove some words from the list, with non null delay.</p>
+  
+  <div class="bs-example">
+    <button class="btn btn-sm btn-primary" id="update-demo">Update</button>
+    <div id="demo-update" class="demo"></div>
+  </div>
+{% highlight javascript %}
+$('#demo').jQCloud(words, {
+  delay: 50
+});
+$('#update-demo').on('click', function() {
+  words.splice(-5);
+  $('#demo').jQCloud('update', words);
+});
+{% endhighlight %}
+
+
+</section>
+
+
+<style>
+.demo {
+  margin:0 auto;
+  width:450px;
+  height:250px;
+  background:white;
+}
+
+#demo-autosize {
+  width:80%;
+}
+</style>
+
+<link rel="stylesheet" href="{{site.github.url}}/dist/jqcloud2/dist/jqcloud.min.css">
+<script src="{{site.github.url}}/dist/jqcloud2/dist/jqcloud.min.js"></script>
+<script src="{{site.github.url}}/dist/demo-words.js"></script>
+
+<script>
+$('#demo-simple').jQCloud(basic_words);
+
+$('#demo-link').jQCloud(linked_words);
+
+$('#demo-shape').jQCloud(basic_words, {
+  shape: 'rectangular'
+});
+
+$('#demo-autosize').jQCloud(basic_words, {
+  autoResize: true
+});
+
+$('#demo-colors-size').jQCloud(basic_words, {
+  classPattern: null,
+  colors: ["#800026", "#bd0026", "#e31a1c", "#fc4e2a", "#fd8d3c", "#feb24c", "#fed976", "#ffeda0", "#ffffcc"],
+  fontSize: {
+    from: 0.1,
+    to: 0.02
+  }
+});
+
+$('#demo-handlers').jQCloud(handlers_words);
+
+$('#demo-update').jQCloud(basic_words, {
+  delay: 50
+});
+$('#update-demo').on('click', function() {
+  basic_words.splice(-5);
+  $('#demo-update').jQCloud('update', basic_words);
+});
+</script>
