@@ -1,7 +1,7 @@
 # name of the software
 name: jQCloud
 # current version of the software
-version: 2.0.0
+version: 2.0.1
 # url of the download button
 downloadUrl: https://github.com/mistic100/jQCloud
 # licence of the software
