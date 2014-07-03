@@ -34,7 +34,9 @@
       max_weight: null,
       min_weight: null,
       sizes: [],
-      colors: []
+      colors: [],
+      selector: null,
+      classes: []
     };
 
     this.initialize();
@@ -58,6 +60,8 @@
 
   jQCloud.prototype = {
     initialize: function() {
+      var i;
+
       // Set/Get dimensions
       if (this.options.width) {
         this.$element.width(this.options.width);
@@ -74,6 +78,12 @@
 
       // Default options value
       this.options = $.extend(true, {}, jQCloud.DEFAULTS, this.options);
+
+      // search words in HTML
+      if (typeof this.word_array == 'string') {
+        this.data.selector = this.word_array;
+        this.word_array = this.parseHTML(this.data.selector);
+      }
 
       // Ensure delay
       if (this.options.delay === null) {
@@ -97,7 +107,7 @@
         if (cl > 0) {
           // Fill the sizes array to X items
           if (cl < this.options.steps) {
-            for (var i=cl; i<this.options.steps; i++) {
+            for (i=cl; i<this.options.steps; i++) {
               this.options.colors[i] = this.options.colors[cl-1];
             }
           }
@@ -105,6 +115,12 @@
           this.colorGenerator = function(weight) {
             return this.options.colors[this.options.steps - weight];
           };
+        }
+      }
+
+      if (this.colorGenerator) {
+        for (i=0; i<this.options.steps; i++) {
+          this.data.colors.push(this.colorGenerator(i+1));
         }
       }
 
@@ -127,14 +143,28 @@
         if (sl > 0) {
           // Fill the sizes array to X items
           if (sl < this.options.steps) {
-            for (var j=sl; j<this.options.steps; j++) {
-              this.options.fontSize[j] = this.options.fontSize[sl-1];
+            for (i=sl; i<this.options.steps; i++) {
+              this.options.fontSize[i] = this.options.fontSize[sl-1];
             }
           }
 
           this.sizeGenerator = function(width, height, weight) {
             return this.options.fontSize[this.options.steps - weight];
           };
+        }
+      }
+
+      if (this.sizeGenerator) {
+        for (i=0; i<this.options.steps; i++) {
+          this.data.sizes.push(this.sizeGenerator(this.options.width, this.options.height, i+1));
+        }
+      }
+
+      // Generate classes
+      this.data.classes = [];
+      if (this.options.classPattern) {
+        for (i=0; i<this.options.steps; i++) {
+          this.data.classes.push(this.options.classPattern.replace('{n}', i+1));
         }
       }
 
@@ -169,7 +199,8 @@
             this.options.height = new_size.height;
             this.data.aspect_ratio = this.options.width / this.options.height;
 
-            this.update(this.word_array);
+            this.clearTimeouts();
+            this.drawWordCloud(!!this.data.selector);
           }
         }, 50, this));
       }
@@ -214,17 +245,21 @@
     },
 
     // Initialize the drawing of the whole cloud
-    drawWordCloud: function() {
-      var i, l;
-      
-      this.$element.children('[id^="' + this.data.namespace + '"]').remove();
+    drawWordCloud: function(keepExisting) {
+      var i, l=this.word_array.length;
+
+      this.data.placed_words = [];
+
+      if (!keepExisting) {
+        this.$element.children('[id^="' + this.data.namespace + '"]').remove();
+      }
 
       if (this.word_array.length === 0) {
         return;
       }
 
       // Make sure every weight is a number before sorting
-      for (i=0, l=this.word_array.length; i<l; i++) {
+      for (i=0; i<l; i++) {
         this.word_array[i].weight = parseFloat(this.word_array[i].weight, 10);
       }
 
@@ -233,32 +268,16 @@
         return b.weight - a.weight;
       });
 
-      // Kepp trace of bounds
+      // Keep trace of bounds
       this.data.max_weight = this.word_array[0].weight;
-      this.data.min_weight = this.word_array[this.word_array.length - 1].weight;
-
-      // Generate colors
-      this.data.colors = [];
-      if (this.colorGenerator) {
-        for (i=0; i<this.options.steps; i++) {
-          this.data.colors.push(this.colorGenerator(i+1));
-        }
-      }
-
-      // Generate font sizes
-      this.data.sizes = [];
-      if (this.sizeGenerator) {
-        for (i=0; i<this.options.steps; i++) {
-          this.data.sizes.push(this.sizeGenerator(this.options.width, this.options.height, i+1));
-        }
-      }
+      this.data.min_weight = this.word_array[l-1].weight;
 
       // Iterate drawOneWord on every word, immediately or with delay
       if (this.options.delay > 0){
         this.drawOneWordDelayed();
       }
       else {
-        for (i=0, l=this.word_array.length; i<l; i++) {
+        for (i=0; i<l; i++) {
           this.drawOneWord(i, this.word_array[i]);
         }
 
@@ -286,19 +305,49 @@
           word_size,
           word_style;
 
-      // Create word attr object
-      word.attr = $.extend({}, word.html, { id: word_id });
+      if (!word.$el) {
+        if (word.link) {
+          word_span = $('<a>');
+
+          // If link is a string, then use it as the link href
+          if (typeof word.link === 'string') {
+            word.link = { href: word.link };
+          }
+          if (this.options.encodeURI) {
+            word.link.href = encodeURI(word.link.href).replace(/'/g, '%27');
+          }
+
+          word_span.attr(word.link);
+        }
+        else {
+          word_span = $('<span>');
+        }
+
+        word_span.attr(word.html || {}).text(word.text);
+
+        // Bind handlers to words
+        if (word.handlers) {
+          word_span.on(word.handlers);
+        }
+
+        this.$element.append(word_span);
+      }
+      else {
+        word_span = word.$el;
+      }
+
+      word_span[0].id = word_id;
 
       // Linearly map the original weight to a discrete scale from 1 to 10
       // Only if weights are different
       if (this.data.max_weight != this.data.min_weight) {
         weight = Math.round((word.weight - this.data.min_weight) * 1.0 * (this.options.steps-1) / (this.data.max_weight - this.data.min_weight)) + 1;
       }
-      word_span = $('<span>').attr(word.attr);
 
       // Apply class
-      if (this.options.classPattern) {
-        word_span.addClass(this.options.classPattern.replace('{n}', weight));
+      if (this.data.classes.length) {
+        word_span.removeClass(this.data.classes.join(' '))
+          .addClass(this.data.classes[weight-1]);
       }
 
       // Apply color
@@ -311,30 +360,6 @@
         word_span.css('font-size', this.data.sizes[weight-1]);
       }
 
-      // Append link if word.link attribute was set
-      if (word.link) {
-        // If link is a string, then use it as the link href
-        if (typeof word.link === 'string') {
-          word.link = { href: word.link };
-        }
-
-        if (this.options.encodeURI) {
-          word.link.href = encodeURI(word.link.href).replace(/'/g, '%27');
-        }
-
-        word_span.append($('<a>').attr(word.link).text(word.text));
-      }
-      else {
-        word_span.text(word.text);
-      }
-
-      // Bind handlers to words
-      if (word.handlers) {
-        word_span.on(word.handlers);
-      }
-
-      this.$element.append(word_span);
-
       word_size = {
         width: word_span.width(),
         height: word_span.height()
@@ -344,11 +369,12 @@
 
       // Save a reference to the style property, for better performance
       word_style = word_span[0].style;
+      word_style.display = 'block';
       word_style.position = 'absolute';
       word_style.left = word_size.left + 'px';
       word_style.top = word_size.top + 'px';
 
-      while(this.hitTest(word_size)) {
+      while (this.hitTest(word_size)) {
         // option shape is 'rectangular' so move the word in a rectangular spiral
         if (this.options.shape === 'rectangular') {
           steps_in_direction++;
@@ -392,7 +418,12 @@
           (word_size.top + word_size.height) > this.options.height
         )
       ) {
-        word_span.remove();
+        if (word.$el) {
+          word_style.display = 'none';
+        }
+        else {
+          word_span.remove();
+        }
         return;
       }
 
@@ -441,11 +472,34 @@
 
     // Update the list of words
     update: function(word_array) {
-      this.word_array = word_array;
-      this.data.placed_words = [];
-
       this.clearTimeouts();
-      this.drawWordCloud();
+
+      if (this.data.selector && !$.isArray(word_array)) {
+        this.word_array = this.parseHTML(this.data.selector);
+        this.drawWordCloud(true);
+      }
+      else {
+        this.word_array = word_array || [];
+        this.drawWordCloud();
+      }
+    },
+
+    parseHTML: function(selector) {
+      var word_array = [],
+          $items = this.$element.children(selector);
+
+      $items.each(function() {
+        var weight = $(this).data('weight');
+
+        if (weight) {
+          word_array.push({
+            $el: $(this),
+            weight: weight
+          });
+        }
+      });
+
+      return word_array;
     }
   };
 

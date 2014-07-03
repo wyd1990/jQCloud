@@ -59,22 +59,22 @@ $(function() {
       });
 
       QUnit.test('links into word cloud', function(assert) {
-        assert.ok($("#container1 span:contains('Minus three') a[href=#]").length == 1, "If 'link' option is specified and is a string, an html anchor pointing to that URL is created.");
-        assert.ok($("#container1 span:contains('Two') a[href=#]").length == 1, "If 'link' option is specified and is an object, an html anchor pointing to link.href is created.");
-        assert.equal($("#container1 span:contains('Two') a").attr("test"), "testing", "If 'link' option is specified and is an object, custom attributes should be set.");
+        assert.ok($("#container1 a:contains('Minus three')[href=#]").length == 1, "If 'link' option is specified and is a string, an html anchor pointing to that URL is created.");
+        assert.ok($("#container1 a:contains('Two')[href=#]").length == 1, "If 'link' option is specified and is an object, an html anchor pointing to link.href is created.");
+        assert.equal($("#container1 a:contains('Two')").attr("test"), "testing", "If 'link' option is specified and is an object, custom attributes should be set.");
       });
 
       QUnit.test('Event handlers for words', function(assert) {
-        $("#container1 span:contains('Two')").trigger("click");
-        assert.equal($("#container1 span:contains('Two')").data("testHandler"), "Handler works!", "Event handlers should be triggered.");
+        $("#container1 a:contains('Two')").trigger("click");
+        assert.equal($("#container1 a:contains('Two')").data("testHandler"), "Handler works!", "Event handlers should be triggered.");
       });
 
       QUnit.test('afterWordRender callback', function(assert) {
-        assert.equal($("#container1 span:contains('Two')").data("testCallback"), "Callback works!", "afterWordRender callback should be called, and 'this' should be the word element.");
+        assert.equal($("#container1 a:contains('Two')").data("testCallback"), "Callback works!", "afterWordRender callback should be called, and 'this' should be the word element.");
       });
 
       QUnit.test('Custom classes', function(assert) {
-        assert.ok($("#container1 span:contains('Two')").hasClass("mycustomclass"), "Custom classes should be set via html.class attribute");
+        assert.ok($("#container1 a:contains('Two')").hasClass("mycustomclass"), "Custom classes should be set via html.class attribute");
       });
 
       QUnit.test('Custom attributes', function(assert) {
@@ -127,7 +127,7 @@ $(function() {
     encodeURI: false,
     afterCloudRender: function(){
       QUnit.test('Links render without encoding', function(assert){
-        assert.equal($("#container5 span a").attr('href'), '/posts?tag=John%27s+Bday', 'If encodeURI is turned off');
+        assert.equal($("#container5 a").attr('href'), '/posts?tag=John%27s+Bday', 'If encodeURI is turned off');
       });
     }
   });
@@ -136,7 +136,7 @@ $(function() {
     encodeURI: true,
     afterCloudRender: function(){
       QUnit.test('Links render with encoding', function(assert){
-        assert.equal($("#container6 span a").attr('href'), '/posts?tag=John%2527s+Bday', 'If encodeURI is turned on');
+        assert.equal($("#container6 a").attr('href'), '/posts?tag=John%2527s+Bday', 'If encodeURI is turned on');
       });
     }
   });
