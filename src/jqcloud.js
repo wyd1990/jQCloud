@@ -20,9 +20,6 @@
     this.word_array = word_array || [];
     this.options = options;
 
-    this.sizeGenerator = null;
-    this.colorGenerator = null;
-
     // Data used internally
     this.data = {
       placed_words: [],
@@ -62,6 +59,8 @@
     initialize: function() {
       var i;
 
+      this.$element.addClass('jqcloud');
+
       // Set/Get dimensions
       if (this.options.width) {
         this.$element.width(this.options.width);
@@ -82,7 +81,7 @@
       // search words in HTML
       if (typeof this.word_array == 'string') {
         this.data.selector = this.word_array;
-        this.word_array = this.parseHTML(this.data.selector);
+        this.word_array = this.parseHTML();
       }
 
       // Ensure delay
@@ -96,10 +95,22 @@
         this.options.center.y = this.options.center.y / this.options.height;
       }
 
+      // Internal data
+      this.data.angle = Math.random() * 6.28;
+      this.data.step = (this.options.shape === 'rectangular') ? 18.0 : 2.0;
+      this.data.aspect_ratio = this.options.width / this.options.height;
+      this.data.namespace = this.$element.attr('id') || Math.floor((Math.random()*1000000)).toString(36);
+
+      // Container's CSS position cannot be 'static'
+      if (this.$element.css('position') === 'static') {
+        this.$element.css('position', 'relative');
+      }
+
       // Create colorGenerator function from options
+      var colorGenerator = null;
       // Direct function
       if (typeof this.options.colors == 'function') {
-        this.colorGenerator = this.options.colors;
+        colorGenerator = this.options.colors;
       }
       // Array of sizes
       else if ($.isArray(this.options.colors)) {
@@ -112,30 +123,30 @@
             }
           }
 
-          this.colorGenerator = function(weight) {
+          colorGenerator = $.proxy(function(weight) {
             return this.options.colors[this.options.steps - weight];
-          };
+          }, this);
         }
       }
-
-      if (this.colorGenerator) {
+      if (colorGenerator) {
         for (i=0; i<this.options.steps; i++) {
-          this.data.colors.push(this.colorGenerator(i+1));
+          this.data.colors.push(colorGenerator(i+1));
         }
       }
 
       // Create sizeGenerator function from options
+      var sizeGenerator = null;
       // Direct function
       if (typeof this.options.fontSize == 'function') {
-        this.sizeGenerator = this.options.fontSize;
+        sizeGenerator = this.options.fontSize;
       }
       // Object with 'from' and 'to'
       else if ($.isPlainObject(this.options.fontSize)) {
-        this.sizeGenerator = function(width, height, weight) {
+        sizeGenerator = $.proxy(function(width, height, weight) {
           var max = width * this.options.fontSize.from,
               min = width * this.options.fontSize.to;
           return Math.round(min + (max - min) * 1.0 / (this.options.steps-1) * (weight - 1)) + 'px';
-        };
+        }, this);
       }
       // Array of sizes
       else if ($.isArray(this.options.fontSize)) {
@@ -148,15 +159,14 @@
             }
           }
 
-          this.sizeGenerator = function(width, height, weight) {
+          sizeGenerator = $.proxy(function(width, height, weight) {
             return this.options.fontSize[this.options.steps - weight];
-          };
+          }, this);
         }
       }
-
-      if (this.sizeGenerator) {
+      if (sizeGenerator) {
         for (i=0; i<this.options.steps; i++) {
-          this.data.sizes.push(this.sizeGenerator(this.options.width, this.options.height, i+1));
+          this.data.sizes.push(sizeGenerator(this.options.width, this.options.height, i+1));
         }
       }
 
@@ -166,21 +176,6 @@
         for (i=0; i<this.options.steps; i++) {
           this.data.classes.push(this.options.classPattern.replace('{n}', i+1));
         }
-      }
-
-      this.data.angle = Math.random() * 6.28;
-      this.data.step = (this.options.shape === 'rectangular') ? 18.0 : 2.0;
-      this.data.aspect_ratio = this.options.width / this.options.height;
-      this.clearTimeouts();
-
-      // Namespace word ids to avoid collisions between multiple clouds
-      this.data.namespace = (this.$element.attr('id') || Math.floor((Math.random()*1000000)).toString(36)) + '_word_';
-
-      this.$element.addClass('jqcloud');
-
-      // Container's CSS position cannot be 'static'
-      if (this.$element.css('position') === 'static') {
-        this.$element.css('position', 'relative');
       }
 
       // Delay execution so that the browser can render the page before the computatively intensive word cloud drawing
@@ -236,7 +231,7 @@
     // Helper function to test if an element overlaps others
     hitTest: function(elem) {
       // Check elements for overlap one by one, stop and return false as soon as an overlap is found
-      for(var i=0, l=this.data.placed_words.length; i<l; i++) {
+      for (var i=0, l=this.data.placed_words.length; i<l; i++) {
         if (this.overlapping(elem, this.data.placed_words[i])) {
           return true;
         }
@@ -249,9 +244,10 @@
       var i, l=this.word_array.length;
 
       this.data.placed_words = [];
+      this.clearTimeouts();
 
       if (!keepExisting) {
-        this.$element.children('[id^="' + this.data.namespace + '"]').remove();
+        this.clear();
       }
 
       if (this.word_array.length === 0) {
@@ -289,10 +285,7 @@
 
     // Function to draw a word, by moving it in spiral until it finds a suitable empty place
     drawOneWord: function(index, word) {
-      var word_id = this.data.namespace + index,
-          word_selector = '#' + word_id,
-
-          // option.shape == 'elliptic'
+      var // option.shape == 'elliptic'
           angle = this.data.angle,
           radius = 0.0,
 
@@ -305,7 +298,10 @@
           word_size,
           word_style;
 
-      if (!word.$el) {
+      if (word.$el) {
+        word_span = word.$el;
+      }
+      else {
         if (word.link) {
           word_span = $('<a>');
 
@@ -332,32 +328,29 @@
 
         this.$element.append(word_span);
       }
-      else {
-        word_span = word.$el;
-      }
 
-      word_span[0].id = word_id;
+      word_span.attr('data-jqcloud', this.data.namespace);
 
-      // Linearly map the original weight to a discrete scale from 1 to 10
+      // Linearly map the original weight to a discrete scale from 0 to steps-1
       // Only if weights are different
       if (this.data.max_weight != this.data.min_weight) {
-        weight = Math.round((word.weight - this.data.min_weight) * 1.0 * (this.options.steps-1) / (this.data.max_weight - this.data.min_weight)) + 1;
+        weight = Math.round((word.weight - this.data.min_weight) * (this.options.steps-1) / (this.data.max_weight - this.data.min_weight));
       }
 
       // Apply class
       if (this.data.classes.length) {
         word_span.removeClass(this.data.classes.join(' '))
-          .addClass(this.data.classes[weight-1]);
+          .addClass(this.data.classes[weight]);
       }
 
       // Apply color
       if (this.data.colors.length) {
-        word_span.css('color', this.data.colors[weight-1]);
+        word_span.css('color', this.data.colors[weight]);
       }
 
       // Apply size
       if (this.data.sizes.length) {
-        word_span.css('font-size', this.data.sizes[weight-1]);
+        word_span.css('font-size', this.data.sizes[weight]);
       }
 
       word_size = {
@@ -407,6 +400,10 @@
           word_size.left = this.options.center.x*this.options.width - (word_size.width / 2.0) + (radius*Math.cos(angle)) * this.data.aspect_ratio;
           word_size.top = this.options.center.y*this.options.height + radius*Math.sin(angle) - (word_size.height / 2.0);
         }
+
+        word_size.left = Math.round(word_size.left);
+        word_size.top = Math.round(word_size.top);
+
         word_style.left = word_size.left + 'px';
         word_style.top = word_size.top + 'px';
       }
@@ -465,9 +462,15 @@
     // Destroy any data and objects added by the plugin
     destroy: function() {
       this.clearTimeouts();
+      this.clear();
+
       this.$element.removeClass('jqcloud');
       this.$element.removeData('jqcloud');
-      this.$element.children('[id^="' + this.namespace + '"]').remove();
+    },
+
+    // Remove cloud content
+    clear: function() {
+      this.$element.children('[data-jqcloud="' + this.data.namespace + '"]').remove();
     },
 
     // Update the list of words
@@ -475,7 +478,7 @@
       this.clearTimeouts();
 
       if (this.data.selector && !$.isArray(word_array)) {
-        this.word_array = this.parseHTML(this.data.selector);
+        this.word_array = this.parseHTML();
         this.drawWordCloud(true);
       }
       else {
@@ -484,9 +487,10 @@
       }
     },
 
-    parseHTML: function(selector) {
+    // Search container children for potential words
+    parseHTML: function() {
       var word_array = [],
-          $items = this.$element.children(selector);
+          $items = this.$element.children(this.data.selector);
 
       $items.each(function() {
         var weight = $(this).data('weight');

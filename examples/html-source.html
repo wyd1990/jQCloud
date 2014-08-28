@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>jQCloud Example</title>
+  
+  <link rel="stylesheet" href="../dist/jqcloud.min.css">
+  
+  <script src="../bower_components/jquery/dist/jquery.min.js"></script>
+  <script src="../src/jqcloud.js"></script>
+  
+  <style>
+    #my_favorite_latin_words>* { display:none; }
+  </style>
+  
+  <script>
+    $(function() {
+      $("#my_favorite_latin_words").jQCloud('*');
+      $("button#update").click(function(){
+          $("#my_favorite_latin_words>*").each(function(){
+            if (Math.random() <= 0.1) 
+              $(this).data('weight', Math.round(Math.random()*6+5));
+            else 
+              $(this).data('weight', Math.round(Math.random()*6));
+          });
+          $("#my_favorite_latin_words").jQCloud('update');
+      });
+    });
+  </script>
+</head>
+
+<body>
+
+  <h1>jQCloud Example</h1>
+  <button id="update"> Randomize </button>
+  <div id="my_favorite_latin_words" style="width: 550px; height: 350px; border: 1px solid #ccc;">
+    <a data-weight="13" href="https://github.com/mistic100/jQCloud">Lorem</a>
+    <a href="http://jquery.com" target="_blank" data-weight="10.5" class="custom-class">Ipsum</a>
+    <span data-weight="9.4">Dolor</span>
+    <span data-weight="8">Sit</span>
+    <span data-weight="6.2">Amet</span>
+    <span data-weight="5">Consectetur</span>
+    <span data-weight="5">Adipiscing</span>
+    <span data-weight="5">Elit</span>
+    <span data-weight="5">Nam et</span>
+    <span data-weight="4">Leo</span>
+    <span data-weight="4">Sapien</span>
+    <span data-weight="3">Pellentesque</span>
+    <span data-weight="3">habitant</span>
+    <span data-weight="3">morbi</span>
+    <span data-weight="3">tristisque</span>
+    <span data-weight="3">senectus</span>
+    <span data-weight="3">et netus</span>
+    <span data-weight="3">et malesuada</span>
+    <span data-weight="2">fames</span>
+    <span data-weight="2">ac turpis</span>
+    <span data-weight="2">egestas</span>
+    <span data-weight="2">Aenean</span>
+    <span data-weight="2">vestibulum</span>
+    <span data-weight="2">elit</span>
+    <span data-weight="2">sit amet</span>
+    <span data-weight="2">metus</span>
+    <span data-weight="2">adipiscing</span>
+    <span data-weight="2">ut ultrices</span>
+    <span data-weight="1">justo</span>
+    <span data-weight="1">dictum</span>
+    <span data-weight="1">Ut et leo</span>
+    <span data-weight="1">metus</span>
+    <span data-weight="1">at molestie</span>
+    <span data-weight="1">purus</span>
+    <span data-weight="1">Curabitur</span>
+    <span data-weight="1">diam</span>
+    <span data-weight="1">dui</span>
+    <span data-weight="1">ullamcorper</span>
+    <span data-weight="1">id vuluptate ut</span>
+    <span data-weight="1">mattis</span>
+    <span data-weight="1">et nulla</span>
+    <span data-weight="1">Sed</span>
+  </div>
+  
+</body>
+</html>
