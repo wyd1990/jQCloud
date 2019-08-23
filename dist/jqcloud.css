@@ -10,11 +10,13 @@
   line-height: normal;
   overflow: hidden;
   position: relative;
+  font-size: 12px; /* Chrome默认最小字号 */
 }
 
 .jqcloud-word {
   margin: 0;
   padding: 0;
+  background-color: rgb(216, 216, 216);
 }
 .jqcloud-word.w1 {
   color: #aab5f0;

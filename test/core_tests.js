@@ -1,11 +1,8 @@
 $(function() {
     var $c = $('#cloud');
-
-    QUnit.module('core', {
-        afterEach: function() {
-            $c.jQCloud('destroy');
-        }
-    });
+$c.jQCloud('destroy');
+        
+    
 
     var some_words = [
         {

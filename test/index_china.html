@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>jQCloud Example</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <link rel="stylesheet" type="text/css" href="../dist/jqcloud.css"/>
+  <script type="text/javascript" src="jquery-1.10.2.min.js"></script>
+  <script type="text/javascript" src="../dist/jqcloud.js"></script>
+  <script type="text/javascript">
+      var word_list = [
+          {text: "阿尔伯特·爱因斯坦", weight: 100},
+          {text: "理查德·费曼", weight: 99},
+          {text: "尼尔斯·玻尔", weight: 98},
+          {text: "麦克斯韦", weight: 97},
+          {text: "迈克尔·法拉第", weight: 80},
+          {text: "保罗·狄拉克", weight: 80},
+          {text: "牛顿", weight: 77},
+          {text: "伽利略·伽利雷", weight: 75},
+          {text: "马克斯·普朗克", weight: 74},
+          {text: "亨利·卡文迪许", weight: 71},
+          {text: "罗伯特·奥本海默", weight: 70},
+          {text: "亚瑟·斯坦利·爱丁顿", weight: 70},
+          {text: "安德烈·玛丽·安培", weight: 65},
+          {text: "马克斯·玻恩", weight: 65},
+          {text: "安德烈·玛丽·安培", weight: 60},
+          {text: "丹尼尔·伯努利", weight: 55},
+          {text: "路易斯·维克多·德布罗意", weight: 55},
+          {text: "克里斯蒂安·约翰·多普勒", weight: 53},
+          {text: "弗里曼·戴森", weight: 51},
+          {text: "翰尼斯·迪德里克·范德华", weight: 50},
+          {text: "本杰明·富兰克林", weight: 50},
+          {text: "傅里叶", weight: 46},
+          {text: "恩利科·费米", weight: 43},
+          {text: "尼古拉·哥白尼", weight: 42},
+          {text: "高斯", weight: 41},
+          {text: "史蒂芬·威廉·霍金", weight: 40},
+          {text: "克里斯蒂安·惠更斯", weight: 40},
+          {text: "沃纳·海森堡", weight: 19},
+          {text: "埃德蒙·哈雷", weight: 18},
+          {text: "哈密顿", weight: 18},
+          {text: "玛丽·居里", weight: 18},
+          {text: "查理·奥古斯丁·库仑", weight: 17},
+          {text: "约翰尼斯·开普勒", weight: 17},
+          {text: "莱布尼茨", weight: 15},
+          {text: "列夫·达维多维奇·朗道", weight: 15},
+          {text: "亨德瑞克·安图恩·洛伦兹", weight: 15},
+          {text: "欧内斯特·卢瑟福", weight: 13},
+          {text: "钱学森", weight: 13},
+          {text: "尼古拉·特斯拉", weight: 12},
+          {text: "埃尔温·薛定谔", weight: 12},
+          {text: "托马斯·杨", weight: 8},
+          {text: "杨振宁", weight: 7},
+          {text: "沃尔夫冈·E·泡利", weight: 7},
+          {text: "普朗克", weight: 4},
+          {text: "莱昂哈德·欧拉", weight: 4},
+          {text: "乔治·西蒙·欧姆", weight: 3},
+          {text: "欧内斯特·马赫", weight: 3},
+          {text: "李政道", weight: 1},
+          {text: "黎曼", weight: 1},
+          {text: "约瑟夫·路易斯·拉格朗日", weight: 1},
+      ];
+      $(function () {
+          let options = {
+              fontSize: function (width, height, weight) {
+                  return 100 + (weight - 1) * 25 + '%'
+              },
+              width: 618,
+              height: 382,
+              autoResize: true
+          };
+          $("#word_cloud").jQCloud(word_list, options);
+      });
+  </script>
+</head>
+<body>
+<h4 style="margin: 0">jQCloud Example</h4>
+<div id="word_cloud" style="border: 1px solid #ccc;font-size: 12px"></div>
+</body>
+</html>
