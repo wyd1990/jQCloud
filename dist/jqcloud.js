@@ -143,7 +143,7 @@
             }
 
             this.data.angle = Math.random() * 6.28;
-            this.data.step = (this.options.shape === 'rectangular') ? 18.0 : 2.0;
+            this.data.step = !!this.options.step ? this.options.step : (this.options.shape === 'rectangular') ? 18.0 : 2;
             this.data.aspect_ratio = this.options.width / this.options.height;
             this.clearTimeouts();
 
@@ -193,7 +193,7 @@
             return false;
         },
 
-        // Helper function to test if an element overlaps others
+        // word之间碰撞校验
         hitTest: function (elem) {
             // Check elements for overlap one by one, stop and return false as soon as an overlap is found
             for (var i = 0, l = this.data.placed_words.length; i < l; i++) {
@@ -204,7 +204,7 @@
             return false;
         },
 
-        // Initialize the drawing of the whole cloud
+        // 绘制整个词云
         drawWordCloud: function () {
             var i, l;
 
@@ -331,6 +331,42 @@
             // 为word添加事件
             if (word.handlers) {
                 word_span.on(word.handlers);
+            }
+
+            // 为word添加悬浮提示
+            if (word.hoverTip) {
+                word_span.css('cursor', 'pointer');
+                var word_tip = $('.jqcloud div.word-tip');
+                if (word_tip.length == 0) {
+                    word_tip = $('<div class="word-tip">');
+                    this.$element.append(word_tip);
+                }
+                var self = this;
+                word_span.mousemove(function (e) {
+                    $(this).addClass('hover');
+
+                    var tip_top_offset = e.pageY - self.$element.offset().top > self.$element.height() / 2 ? 6 - word_tip.outerHeight() : 6;
+                    var tip_left_offset = e.pageX - self.$element.offset().left > self.$element.width() / 2 ? -8 - word_tip.outerWidth() : 12;
+                    word_tip.offset({
+                        top: e.pageY + tip_top_offset,
+                        left: e.pageX + tip_left_offset
+                    });
+                });
+                word_span.mouseenter(function (e) {
+                    word_tip.empty();
+                    var tip_title = $('<div class="title">').appendTo(word_tip);
+                    $('<i class="icon">').appendTo(tip_title).css('background-color', $(this).css('color'));
+                    $('<span class="text">').appendTo(tip_title).text(word.text);
+                    $('<span class="weight">').appendTo(tip_title).text(word.hoverTip.weight + ': ' + word.weight);
+                    if (!!word.hoverTip.content) {
+                        $('<div class="content">').appendTo(word_tip).html(word.hoverTip.content);
+                    }
+                });
+                word_span.mouseleave(function (e) {
+                    $(this).removeClass('hover');
+                    word_tip.css('top', '');
+                    word_tip.css('left', '');
+                });
             }
 
             this.$element.append(word_span);

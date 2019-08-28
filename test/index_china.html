@@ -8,8 +8,16 @@
   <script type="text/javascript" src="../dist/jqcloud.js"></script>
   <script type="text/javascript">
       var word_list = [
-          {text: "阿尔伯特·爱因斯坦", weight: 100},
-          {text: "理查德·费曼", weight: 99},
+          {
+              text: "阿尔伯特·爱因斯坦", weight: 100, hoverTip: {
+                  weight : '人数',
+                  content: '爱因斯坦于1879年出生于德国乌尔姆市的一个犹太人家庭（父母均为犹太人），1900年毕业于苏黎世联邦理工学院，入瑞士国籍。',
+              }
+          },
+          {text: "理查德·费曼", weight: 99, hoverTip: {
+                  weight : '人数',
+                  content: '理查德·菲利普斯·费曼（英文：Richard Phillips Feynman，1918年5月11日—1988年2月15日），美籍犹太裔物理学家，加州理工学院物理学教授，1965年诺贝尔物理奖得主。',
+              }},
           {text: "尼尔斯·玻尔", weight: 98},
           {text: "麦克斯韦", weight: 97},
           {text: "迈克尔·法拉第", weight: 80},
@@ -64,16 +72,16 @@
               fontSize: function (width, height, weight) {
                   return 100 + (weight - 1) * 25 + '%'
               },
-              width: 618,
-              height: 382,
-              autoResize: true
+              width: 800,
+              height: 600,
+              step: 0.5
           };
           $("#word_cloud").jQCloud(word_list, options);
       });
   </script>
 </head>
 <body>
-<h4 style="margin: 0">jQCloud Example</h4>
-<div id="word_cloud" style="border: 1px solid #ccc;font-size: 12px"></div>
+<h4 style="margin: 0; width: 400px; background-color: #cccccc">jQCloud Example</h4>
+<div id="word_cloud" style="border: 1px solid #ccc;font-size: 12px;"></div>
 </body>
 </html>

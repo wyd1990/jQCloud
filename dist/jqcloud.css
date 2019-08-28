@@ -6,63 +6,121 @@
  * Licensed under MIT (http://opensource.org/licenses/MIT)
  */
 .jqcloud {
-  font: 10px "Helvetica", "Arial", sans-serif;
-  line-height: normal;
-  overflow: hidden;
-  position: relative;
-  font-size: 12px; /* Chrome默认最小字号 */
+    font: 10px "Helvetica", "Arial", sans-serif;
+    line-height: normal;
+    overflow: hidden;
+    position: relative;
+    font-size: 12px; /* Chrome默认最小字号 */
 }
 
 .jqcloud-word {
-  margin: 0;
-  padding: 0;
-  background-color: rgb(216, 216, 216);
+    margin: 0;
+    padding: 0;
 }
+
 .jqcloud-word.w1 {
-  color: #aab5f0;
-  font-size: 100%;
+    color: #aab5f0;
+    font-size: 100%;
 }
+
 .jqcloud-word.w2 {
-  color: #99ccee;
-  font-size: 150%;
+    color: #99ccee;
+    font-size: 150%;
 }
+
 .jqcloud-word.w3 {
-  color: #a0ddff;
-  font-size: 200%;
+    color: #a0ddff;
+    font-size: 200%;
 }
+
 .jqcloud-word.w4 {
-  color: #90c5f0;
-  font-size: 250%;
+    color: #90c5f0;
+    font-size: 250%;
 }
+
 .jqcloud-word.w5 {
-  color: #90a0dd;
-  font-size: 300%;
+    color: #90a0dd;
+    font-size: 300%;
 }
+
 .jqcloud-word.w6 {
-  color: #90c5f0;
-  font-size: 350%;
+    color: #90c5f0;
+    font-size: 350%;
 }
+
 .jqcloud-word.w7 {
-  color: #3399dd;
-  font-size: 400%;
+    color: #3399dd;
+    font-size: 400%;
 }
+
 .jqcloud-word.w8 {
-  color: #00ccff;
-  font-size: 450%;
+    color: #00ccff;
+    font-size: 450%;
 }
+
 .jqcloud-word.w9 {
-  color: #00ccff;
-  font-size: 500%;
+    color: #00ccff;
+    font-size: 500%;
 }
+
 .jqcloud-word.w10 {
-  color: #00ccff;
-  font-size: 550%;
+    color: #00ccff;
+    font-size: 550%;
 }
+
 .jqcloud-word a {
-  color: inherit;
-  font-size: inherit;
-  text-decoration: none;
+    color: inherit;
+    font-size: inherit;
+    text-decoration: none;
 }
+
 .jqcloud-word a:hover {
-  color: #00ccff;
+    color: #00ccff;
 }
+
+.jqcloud-word.hover {
+    padding: 1px 0 0 1px;
+    font-weight: 500;
+    -webkit-filter: brightness(75%);
+    filter: brightness(75%);
+}
+
+/* 单词悬浮提示 */
+.jqcloud .word-tip {
+    display: inline-block;
+    background-color: rgba(50, 50, 50, 0.7);
+    border-radius: 4px;
+    color: rgb(255, 255, 255);
+    padding: 5px;
+    position: absolute;
+    z-index: 100;
+    top: -99999999px;
+    max-width: 250px;
+}
+
+.jqcloud .word-tip > .title > i.icon {
+    display: inline-block;
+    background-color: #19be6b;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin-right: 3px;
+}
+
+.jqcloud .word-tip > .title > span.text {
+    font-size: 14px;
+    line-height: 20px;
+}
+
+.jqcloud .word-tip > .title > span.weight {
+    font-size: 12px;
+    margin-left: 10px;
+}
+
+.jqcloud .word-tip > .content {
+    border-top: #ffffff solid 1px;
+    padding-top: 2px;
+    margin-top: 2px;
+    font-size: 12px;
+}
+
