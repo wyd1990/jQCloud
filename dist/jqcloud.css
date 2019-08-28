@@ -78,14 +78,14 @@
     color: #00ccff;
 }
 
+/* 单词悬浮提示 */
 .jqcloud-word.hover {
     font-weight: 500;
-    -webkit-filter: brightness(75%);
-    filter: brightness(75%);
+    -webkit-filter: brightness(70%);
+    filter: brightness(70%);
 }
 
-/* 单词悬浮提示 */
-.jqcloud .word-tip {
+.jqcloud-word-tip {
     display: none;
     background-color: rgba(50, 50, 50, 0.7);
     border-radius: 4px;
@@ -93,10 +93,11 @@
     padding: 5px;
     position: absolute;
     z-index: 100;
+    top: -9999px;
     max-width: 250px;
 }
 
-.jqcloud .word-tip > .title > i.icon {
+.jqcloud-word-tip-icon {
     display: inline-block;
     background-color: #19be6b;
     width: 10px;
@@ -105,17 +106,19 @@
     margin-right: 4px;
 }
 
-.jqcloud .word-tip > .title > span.text {
+.jqcloud-word-tip-title {
+    display: inline-block;
     font-size: 14px;
     line-height: 20px;
 }
 
-.jqcloud .word-tip > .title > span.weight {
+.jqcloud-word-tip-weight {
+    display: inline-block;
     font-size: 12px;
     margin-left: 10px;
 }
 
-.jqcloud .word-tip > .content {
+.jqcloud-word-tip-body {
     border-top: #ffffff solid 1px;
     padding-top: 2px;
     margin-top: 2px;

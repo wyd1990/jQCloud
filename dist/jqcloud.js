@@ -117,13 +117,20 @@
             if (typeof this.options.fontSize == 'function') {
                 this.sizeGenerator = this.options.fontSize;
             }
-            // Object with 'from' and 'to'
+            // Object
             else if ($.isPlainObject(this.options.fontSize)) {
-                this.sizeGenerator = function (width, height, weight) {
-                    var max = width * this.options.fontSize.from,
-                        min = width * this.options.fontSize.to;
-                    return Math.round(min + (max - min) * 1.0 / (this.options.steps - 1) * (weight - 1)) + 'px';
-                };
+                // 百分比步长 stepPercent
+                if (this.options.fontSize.hasOwnProperty('stepPercent')) {
+                    this.sizeGenerator = function (width, height, weight) {
+                        return 100 + (weight - 1) * this.options.fontSize.stepPercent + '%';
+                    };
+                } else { // 'from' and 'to'
+                    this.sizeGenerator = function (width, height, weight) {
+                        var max = width * this.options.fontSize.from,
+                            min = width * this.options.fontSize.to;
+                        return Math.round(min + (max - min) * 1.0 / (this.options.steps - 1) * (weight - 1)) + 'px';
+                    };
+                }
             }
             // Array of sizes
             else if ($.isArray(this.options.fontSize)) {
@@ -336,9 +343,9 @@
             // 为单词添加悬浮提示
             if (word.hoverTip) {
                 word_span.css('cursor', 'pointer');
-                var word_tip = $('.jqcloud div.word-tip');
+                var word_tip = $('.jqcloud-word-tip');
                 if (word_tip.length == 0) {
-                    word_tip = $('<div class="word-tip">');
+                    word_tip = $('<div class="jqcloud-word-tip">');
                     this.$element.append(word_tip);
                 }
                 var self = this;
@@ -356,12 +363,12 @@
                     $(this).addClass('hover');
                     word_tip.css('display', 'table'); // 禁止折叠
                     word_tip.empty();
-                    var tip_title = $('<div class="title">').appendTo(word_tip);
-                    $('<i class="icon">').appendTo(tip_title).css('background-color', $(this).css('color'));
-                    $('<span class="text">').appendTo(tip_title).text(word.text);
-                    $('<span class="weight">').appendTo(tip_title).text(word.hoverTip.weight + ': ' + word.weight);
+                    var tip_head = $('<div class="jqcloud-word-tip-head">').appendTo(word_tip);
+                    $('<i class="jqcloud-word-tip-icon">').appendTo(tip_head).css('background-color', $(this).css('color'));
+                    $('<span class="jqcloud-word-tip-title">').appendTo(tip_head).text(word.text);
+                    $('<span class="jqcloud-word-tip-weight">').appendTo(tip_head).text(word.hoverTip.weight + ': ' + word.weight);
                     if (!!word.hoverTip.content) {
-                        $('<div class="content">').appendTo(word_tip).html(word.hoverTip.content);
+                        $('<div class="jqcloud-word-tip-body">').appendTo(word_tip).html(word.hoverTip.content);
                     }
                 });
                 word_span.mouseleave(function (e) {
