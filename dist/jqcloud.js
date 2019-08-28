@@ -343,8 +343,13 @@
                 }
                 var self = this;
                 word_span.mousemove(function (e) {
-                    var tip_top_offset = e.pageY - self.$element.offset().top > self.$element.height() / 2 ? 6 - word_tip.outerHeight() : 6;
-                    var tip_left_offset = e.pageX - self.$element.offset().left > self.$element.width() / 2 ? -8 - word_tip.outerWidth() : 12;
+                    var cloud_bottom_pos = self.$element.offset().top + self.$element.outerHeight();
+                    var cloud_right_pos = self.$element.offset().left + self.$element.outerWidth();
+                    var tip_top_offset = e.pageY + word_tip.outerHeight() + 11 > cloud_bottom_pos ? 6 - word_tip.outerHeight() : 6;
+                    var tip_left_offset = e.pageX + word_tip.outerWidth() + 17 > cloud_right_pos ? -8 - word_tip.outerWidth() : 12;
+                    console.log('===============');
+                    console.log(e.pageY+ " "+ e.pageX);
+                    console.log((e.pageY + word_tip.outerHeight()) + " "+ (e.pageX + word_tip.outerWidth()));
                     word_tip.offset({
                         top: e.pageY + tip_top_offset,
                         left: e.pageX + tip_left_offset
@@ -352,7 +357,7 @@
                 });
                 word_span.mouseenter(function (e) {
                     $(this).addClass('hover');
-                    word_tip.css('display', 'block');
+                    word_tip.css('display', 'table'); // 禁止折叠
                     word_tip.empty();
                     var tip_title = $('<div class="title">').appendTo(word_tip);
                     $('<i class="icon">').appendTo(tip_title).css('background-color', $(this).css('color'));
@@ -364,7 +369,9 @@
                 });
                 word_span.mouseleave(function (e) {
                     $(this).removeClass('hover');
-                    word_tip.css('display', 'none');
+                    word_tip.css('display', '');
+                    word_tip.css('top', '');
+                    word_tip.css('left', '');
                 });
             }
 
