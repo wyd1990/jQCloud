@@ -328,12 +328,12 @@
                 word_span.text(word.text);
             }
 
-            // 为word添加事件
+            // 为单词添加事件
             if (word.handlers) {
                 word_span.on(word.handlers);
             }
 
-            // 为word添加悬浮提示
+            // 为单词添加悬浮提示
             if (word.hoverTip) {
                 word_span.css('cursor', 'pointer');
                 var word_tip = $('.jqcloud div.word-tip');
@@ -343,8 +343,6 @@
                 }
                 var self = this;
                 word_span.mousemove(function (e) {
-                    $(this).addClass('hover');
-
                     var tip_top_offset = e.pageY - self.$element.offset().top > self.$element.height() / 2 ? 6 - word_tip.outerHeight() : 6;
                     var tip_left_offset = e.pageX - self.$element.offset().left > self.$element.width() / 2 ? -8 - word_tip.outerWidth() : 12;
                     word_tip.offset({
@@ -353,6 +351,8 @@
                     });
                 });
                 word_span.mouseenter(function (e) {
+                    $(this).addClass('hover');
+                    word_tip.css('display', 'block');
                     word_tip.empty();
                     var tip_title = $('<div class="title">').appendTo(word_tip);
                     $('<i class="icon">').appendTo(tip_title).css('background-color', $(this).css('color'));
@@ -364,8 +364,7 @@
                 });
                 word_span.mouseleave(function (e) {
                     $(this).removeClass('hover');
-                    word_tip.css('top', '');
-                    word_tip.css('left', '');
+                    word_tip.css('display', 'none');
                 });
             }
 
@@ -374,7 +373,7 @@
             // 设置word的style，确保word坐标
             word_style = word_span[0].style;
 
-            // 词间距最小，可以通过自定义padding增加
+            // 词间距最小
             word_style.position = 'absolute';
             word_style.lineHeight = '1';
 
