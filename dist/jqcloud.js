@@ -353,7 +353,7 @@
                     var cloud_bottom_pos = self.$element.offset().top + self.$element.outerHeight();
                     var cloud_right_pos = self.$element.offset().left + self.$element.outerWidth();
                     var tip_top_offset = e.pageY + word_tip.outerHeight() + 11 > cloud_bottom_pos ? 6 - word_tip.outerHeight() : 6;
-                    var tip_left_offset = e.pageX + word_tip.outerWidth() + 17 > cloud_right_pos ? -8 - word_tip.outerWidth() : 12;
+                    var tip_left_offset = e.pageX + word_tip.outerWidth() + 19 > cloud_right_pos ? -8 - word_tip.outerWidth() : 14;
                     word_tip.offset({
                         top: e.pageY + tip_top_offset,
                         left: e.pageX + tip_left_offset
